@@ -7,12 +7,16 @@ public class TransactionValidator {
     // объявите константы
 
     public static boolean isValidAmount(double amount) {
-        if(amount >= MIN_AMOUNT && amount <= MAX_AMOUNT) {
-            return true;
+        if(amount < MIN_AMOUNT) {
+            System.out.println("Минимальная сумма перевода: " + MIN_AMOUNT + " р. Попробуйте ещё раз!");
+            return false;
+        } else if(amount > MAX_AMOUNT) {
+            System.out.println("Максимальная сумма перевода: " + MAX_AMOUNT + " р. Попробуйте ещё раз!");
+            return false;
         }
-        System.out.println("Минимальная сумма перевода: " + MIN_AMOUNT + " р. Попробуйте ещё раз!");
-        System.out.println("Максимальная сумма перевода: " + MAX_AMOUNT + " р. Попробуйте ещё раз!");
-        return false;
+
+
+        return true;
 
     }// объявите метод isValidAmount()
     // внутри метода добавьте проверки на минимальную и максимальную сумму перевода
