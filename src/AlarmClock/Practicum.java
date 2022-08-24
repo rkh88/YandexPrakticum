@@ -16,55 +16,55 @@ class Practicum {
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("Введите отметку времени начала экзамена (в миллисекундах):");
-        ... examStartMillis = ...
+        long examStartMillis = scanner.nextLong();
         // Сконвертируйте введённое значение миллисекунд в экземпляр класса Instant
-        Instant examStart = ...
+        Instant examStart = Instant.ofEpochMilli(examStartMillis);
         System.out.println("Введено " + examStart);
 
         System.out.println("Введите отметку текущего времени (в миллисекундах):");
-        ... currentTimeMillis = ...
+        long currentTimeMillis = scanner.nextLong();
         // Сконвертируйте введённое значение миллисекунд в экземпляр класса Instant
-        Instant currentTime = ...
+        Instant currentTime = Instant.ofEpochMilli(currentTimeMillis);
         System.out.println("Введено " + currentTime);
 
         // Вычислите время, в которое нужно проснуться
-        Instant timeToWakeUp = ...
+        Instant timeToWakeUp = examStart.minusSeconds(ONE_HOUR_SECONDS);
         // Проверьте, что текущее время не позже времени пробуждения
-        if (...) {
+        if (currentTime.isAfter(timeToWakeUp)) {
             System.out.println("На экзамен уже не успеть, готовься к пересдаче!");
             return;
         }
 
         // Проверьте, что до времени пробуждения не больше 24 часов
-        if (...) {
-            System.out.printf("Дней до экзамена: %.0f. До экзамена ещё слишком далеко, волноваться не о чем!%n", calculateDuration(...));
+        if (currentTime.plusSeconds(ONE_DAY_SECONDS).isBefore(timeToWakeUp)) {
+            System.out.printf("Дней до экзамена: %.0f. До экзамена ещё слишком далеко, волноваться не о чем!%n", calculateDuration(currentTime, examStart, TimeUnits.DAYS));
             return;
         }
 
 
         System.out.println("Введите желаемую продолжительность сна (в часах):");
-        ... sleepGoalHours = ...
+        long sleepGoalHours = scanner.nextLong() * ONE_HOUR_SECONDS;
 
         // Проверьте, что введённое количество часов -- положительное
-        if (...) {
+        if (sleepGoalHours <= 0) {
             System.out.println("Надо поспать хоть сколько-то!");
             return;
         }
 
         // Вычислите время, в которое нужно ложиться спать
-        Instant timeToGoToSleep = ...;
-        if (...) {
+        Instant timeToGoToSleep = timeToWakeUp.minusSeconds(sleepGoalHours);
+        if (currentTime.isAfter(timeToGoToSleep)) {
             System.out.println("Такое количество времени поспать уже не получится!");
             return;
         }
 
-        System.out.printf("На учёбу остаётся: %.0f мс.%n", calculateDuration(...));
+        System.out.printf("На учёбу остаётся: %.0f мс.%n", calculateDuration(currentTime, timeToGoToSleep, TimeUnits.MILLIS));
         System.out.printf(
                 "Это %.2f мин. или %.2f ч.%n",
-                calculateDuration(...),
-        calculateDuration(...)
+                calculateDuration(currentTime, timeToGoToSleep, TimeUnits.MINUTES),
+        calculateDuration(currentTime, timeToGoToSleep, TimeUnits.HOURS)
         );
-        System.out.printf("Ведь проснуться нужно уже через %.2f ч.%n", calculateDuration(...));
+        System.out.printf("Ведь проснуться нужно уже через %.2f ч.%n", calculateDuration(currentTime, timeToWakeUp, TimeUnits.HOURS));
     }
 
     // Вычислите продолжительность в указанных единицах времени
@@ -72,19 +72,19 @@ class Practicum {
     private static double calculateDuration(Instant firstMoment, Instant secondMoment, TimeUnits unit) {
         switch (unit) {
             case MILLIS: {
-                return ...
+                return (double) (secondMoment.toEpochMilli() - firstMoment.toEpochMilli());
             }
             case SECONDS: {
-                return ...
+                return (double) (secondMoment.toEpochMilli() - firstMoment.toEpochMilli()) / ONE_SECOND_MILLIS;
             }
             case MINUTES: {
-                return ...
+                return (double) (secondMoment.toEpochMilli() - firstMoment.toEpochMilli()) / ONE_MINUTE_MILLIS;
             }
             case HOURS: {
-                return ...
+                return (double) (secondMoment.toEpochMilli() - firstMoment.toEpochMilli()) / ONE_HOUR_MILLIS;
             }
             case DAYS: {
-                return ...
+                return (double) (secondMoment.toEpochMilli() - firstMoment.toEpochMilli()) / ONE_DAY_MILLIS;
             }
             default:
                 return 0;
